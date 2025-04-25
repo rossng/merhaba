@@ -4,9 +4,13 @@ const accusativeNumbersTurkish: Record<number, string> = {
   3: 'üçü',
   4: 'dördü',
   5: 'beşi',
-  6: 'altı',
-  7: 'yedi',
+  6: 'altıyı',
+  7: 'yediyi',
   8: 'sekizi',
+  9: 'dokuzu',
+  10: 'onu',
+  11: 'on biri',
+  12: 'on ikiyi',
 };
 
 const dativeNumbersTurkish: Record<number, string> = {
@@ -105,7 +109,7 @@ export function timeToTurkish(time: { hour: number; minute: number }): string {
   } else if (time.minute < 30) {
     return `${accusativeHourText} ${minuteText} geçiyor`;
   } else {
-    return `${dativeHourText} ${minuteToText} dakika var`;
+    return `${dativeHourText} ${minuteToText} var`;
   }
 }
 
