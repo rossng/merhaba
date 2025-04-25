@@ -1,5 +1,6 @@
 import { Accessor, createSignal, Signal, type Component } from 'solid-js';
 import Header from '../components/Header';
+import { Results } from '../components/Results';
 import { generateRandomTime, timeToTurkish } from '../time/time-utils';
 
 const Time: Component = () => {
@@ -10,6 +11,8 @@ const Time: Component = () => {
     hour: '',
     minute: '',
   });
+
+  const [results, setResults] = createSignal<boolean[]>([]);
 
   const validUserAnswer = () =>
     Boolean(userAnswer().hour.match(/^\d+$/) && userAnswer().minute.match(/^\d+$/));
@@ -27,8 +30,12 @@ const Time: Component = () => {
     const userMinute = parseInt(userAnswer().minute);
 
     if (userHour === currentTime().hour && userMinute === currentTime().minute) {
+      setResults([...results(), true]);
+      console.log('$$ results', results());
       handleNext();
     } else {
+      setResults([...results(), false]);
+      console.log('$$ results', results());
       setState('answer');
     }
   }
@@ -71,10 +78,12 @@ const Time: Component = () => {
             Next
           </button>
         )}
+        <Results results={results} />
       </div>
     </div>
   );
 };
+export default Time;
 
 const LeftCard: Component<{
   currentTime: Accessor<{ hour: number; minute: number }>;
@@ -92,6 +101,7 @@ const RightCard: Component<{
   state: Signal<'question' | 'answer'>;
   className?: string;
 }> = ({ userAnswer: [userAnswer, setUserAnswer], state: [state], className }) => {
+  const disabled = () => state() === 'answer';
   return (
     <div class={`flex items-center justify-center gap-4 ${className}`}>
       <input
@@ -100,8 +110,8 @@ const RightCard: Component<{
         max="12"
         value={userAnswer().hour}
         onInput={e => setUserAnswer({ ...userAnswer(), hour: e.currentTarget.value })}
-        disabled={state() === 'answer'}
-        class="w-24 rounded border p-2 text-center"
+        disabled={disabled()}
+        class={`${disabled() ? 'bg-gray-200' : ''} w-24 rounded border p-2 text-center`}
         placeholder="Saat"
       />
       <span class="text-2xl">:</span>
@@ -112,12 +122,10 @@ const RightCard: Component<{
         step="5"
         value={userAnswer().minute}
         onInput={e => setUserAnswer({ ...userAnswer(), minute: e.currentTarget.value })}
-        disabled={state() === 'answer'}
-        class="w-24 rounded border p-2 text-center"
+        disabled={disabled()}
+        class={`${disabled() ? 'bg-gray-200' : ''} w-24 rounded border p-2 text-center`}
         placeholder="Dakika"
       />
     </div>
   );
 };
-
-export default Time;
