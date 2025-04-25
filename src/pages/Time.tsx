@@ -68,11 +68,6 @@ const Time: Component = () => {
             />
           </div>
         </div>
-        {state() === 'answer' && (
-          <div class="text-xl text-red-500">
-            {currentTime().hour}:{currentTime().minute.toString().padStart(2, '0')}
-          </div>
-        )}
         {state() === 'question' && (
           <button
             onClick={handleSubmit}
@@ -127,30 +122,48 @@ const RightCard: Component<{
   });
 
   return (
-    <div class={`flex items-center justify-center gap-4 ${className}`}>
-      <input
-        ref={hourInputRef}
-        type="number"
-        min="1"
-        max="12"
-        value={userAnswer().hour}
-        onInput={e => setUserAnswer({ ...userAnswer(), hour: e.currentTarget.value })}
-        disabled={disabled()}
-        class={`${disabled() ? 'bg-gray-200' : ''} w-24 rounded border p-2 text-center`}
-        placeholder="Saat"
-      />
-      <span class="text-2xl">:</span>
-      <input
-        type="number"
-        min="0"
-        max="59"
-        step="5"
-        value={userAnswer().minute}
-        onInput={e => setUserAnswer({ ...userAnswer(), minute: e.currentTarget.value })}
-        disabled={disabled()}
-        class={`${disabled() ? 'bg-gray-200' : ''} w-24 rounded border p-2 text-center`}
-        placeholder="Dakika"
-      />
+    <div class={`flex flex-col items-center justify-center gap-4 ${className}`}>
+      <div class={`flex items-center justify-center gap-4`}>
+        <input
+          ref={hourInputRef}
+          type="number"
+          min="1"
+          max="12"
+          value={userAnswer().hour}
+          onInput={e => setUserAnswer({ ...userAnswer(), hour: e.currentTarget.value })}
+          disabled={disabled()}
+          class={`${disabled() ? 'bg-gray-200' : ''} w-24 rounded border p-2 text-center`}
+          placeholder="Saat"
+        />
+        <span class="text-2xl">:</span>
+        <input
+          type="number"
+          min="0"
+          max="59"
+          step="5"
+          value={userAnswer().minute}
+          onInput={e => setUserAnswer({ ...userAnswer(), minute: e.currentTarget.value })}
+          disabled={disabled()}
+          class={`${disabled() ? 'bg-gray-200' : ''} w-24 rounded border p-2 text-center`}
+          placeholder="Dakika"
+        />
+      </div>
+
+      {state() === 'answer' && (
+        <div class={`flex items-center justify-center gap-4 font-bold text-red-500`}>
+          <input
+            value={currentTime().hour}
+            disabled={true}
+            class={`w-24 rounded border p-2 text-center`}
+          />
+          <span class="text-2xl">:</span>
+          <input
+            value={currentTime().minute.toString().padStart(2, '0')}
+            disabled={true}
+            class={`w-24 rounded border p-2 text-center`}
+          />
+        </div>
+      )}
     </div>
   );
 };
