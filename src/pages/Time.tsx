@@ -60,12 +60,12 @@ const Time: Component = () => {
   return (
     <div class="flex h-screen flex-col items-center">
       <Header />
-      <div class="flex w-full max-w-6xl flex-1 flex-col items-center justify-center gap-8 p-8">
+      <div class="flex w-full max-w-6xl flex-1 flex-col items-center gap-8 p-8 md:justify-center">
         <div class="flex flex-col items-center gap-0">
           <h2 class="text-2xl font-bold">Saat kaç?</h2>
           <p class="text-sm text-gray-500">What time is it?</p>
         </div>
-        <div class="flex h-10 w-full flex-grow items-stretch justify-between gap-8">
+        <div class="flex w-full flex-col items-center justify-between gap-2 gap-8 md:h-10 md:flex-grow md:flex-row md:items-stretch">
           <div class="w-1/2 flex-1 text-2xl font-bold">
             <LeftCard currentTime={currentTime} className="h-full" />
           </div>
