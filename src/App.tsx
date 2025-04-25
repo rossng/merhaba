@@ -5,7 +5,7 @@ import Time from './pages/Time';
 
 const App: Component = () => {
   return (
-    <Router>
+    <Router base="/merhaba">
       <Route path="/" component={Home} />
       <Route path="/zaman" component={Time} />
     </Router>
