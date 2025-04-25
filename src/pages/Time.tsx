@@ -3,6 +3,12 @@ import Header from '../components/Header';
 import { Results } from '../components/Results';
 import { generateRandomTime, timeToTurkish } from '../time/time-utils';
 
+/*
+  TODO:
+  - Inverse mode: get a numeric time, type the words
+  - Enable/disable different time types (e.g. half past, to/past, morning/evening)
+*/
+
 const Time: Component = () => {
   const [currentTime, setCurrentTime] = createSignal<{ hour: number; minute: number }>(
     generateRandomTime()
