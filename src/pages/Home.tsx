@@ -6,10 +6,10 @@ import Header from '../components/Header';
 
 const Home: Component = () => {
   return (
-    <div class="flex h-screen flex-col overflow-hidden">
+    <div class="flex h-screen flex-col">
       <Header />
       <div class="h-2 flex-1 p-4">
-        <div class="grid h-full w-full grid-cols-4 gap-4">
+        <div class="grid h-full w-full grid-cols-2 gap-4 md:grid-cols-4">
           <Card image={watchImage} title="Time" link="/zaman" />
           {Array(7)
             .fill(0)
