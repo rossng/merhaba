@@ -1,4 +1,4 @@
-import { Accessor, createSignal, Signal, type Component } from 'solid-js';
+import { Accessor, createEffect, createSignal, Signal, type Component } from 'solid-js';
 import Header from '../components/Header';
 import { Results } from '../components/Results';
 import { generateRandomTime, timeToTurkish } from '../time/time-utils';
@@ -52,6 +52,7 @@ const Time: Component = () => {
             <RightCard
               userAnswer={[userAnswer, setUserAnswer]}
               state={[state, setState]}
+              currentTime={currentTime}
               className="h-full"
             />
           </div>
@@ -99,12 +100,24 @@ const LeftCard: Component<{
 const RightCard: Component<{
   userAnswer: Signal<{ hour: string; minute: string }>;
   state: Signal<'question' | 'answer'>;
+  currentTime: Accessor<{ hour: number; minute: number }>;
   className?: string;
-}> = ({ userAnswer: [userAnswer, setUserAnswer], state: [state], className }) => {
+}> = ({ userAnswer: [userAnswer, setUserAnswer], state: [state], currentTime, className }) => {
   const disabled = () => state() === 'answer';
+  let hourInputRef: HTMLInputElement | undefined;
+
+  // Focus the hour input when the state changes to question
+  createEffect(() => {
+    currentTime();
+    if (state() === 'question' && hourInputRef) {
+      hourInputRef.focus();
+    }
+  });
+
   return (
     <div class={`flex items-center justify-center gap-4 ${className}`}>
       <input
+        ref={hourInputRef}
         type="number"
         min="1"
         max="12"
