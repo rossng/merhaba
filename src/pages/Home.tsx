@@ -10,7 +10,7 @@ const Home: Component = () => {
       <Header />
       <div class="h-2 flex-1 p-4">
         <div class="grid h-full w-full grid-cols-2 gap-4 md:grid-cols-4">
-          <Card image={watchImage} title="Time" link="/zaman" />
+          <Card image={watchImage} title="Zaman" subheading="Time" link="/zaman" />
           {Array(7)
             .fill(0)
             .map(() => (
@@ -28,10 +28,11 @@ interface CardProps {
   image: string;
   alt?: string;
   title?: string;
+  subheading?: string;
   link?: string;
 }
 
-const Card: Component<CardProps> = ({ image, alt, title, link }) => {
+const Card: Component<CardProps> = ({ image, alt, title, subheading, link }) => {
   const disabled = link ? '' : 'opacity-50 grayscale-50 cursor-not-allowed';
   return (
     <A
@@ -40,6 +41,7 @@ const Card: Component<CardProps> = ({ image, alt, title, link }) => {
     >
       <img src={image} alt={alt} class={`max-h-40 w-auto`} />
       <h2 class="text-2xl font-bold">{title}</h2>
+      {Boolean(subheading) && <p class="text-sm">{subheading}</p>}
     </A>
   );
 };
