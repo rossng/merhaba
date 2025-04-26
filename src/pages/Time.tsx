@@ -20,8 +20,17 @@ const Time: Component = () => {
 
   const [results, setResults] = createSignal<boolean[]>([]);
 
-  const validUserAnswer = () =>
-    Boolean(userAnswer().hour.match(/^\d+$/) && userAnswer().minute.match(/^\d+$/));
+  const validHour = () =>
+    Boolean(userAnswer().hour.match(/^\d+$/)) &&
+    parseInt(userAnswer().hour) <= 12 &&
+    parseInt(userAnswer().hour) >= 1;
+
+  const validMinute = () =>
+    Boolean(userAnswer().minute.match(/^\d+$/)) &&
+    parseInt(userAnswer().minute) <= 59 &&
+    parseInt(userAnswer().minute) >= 0;
+
+  const validUserAnswer = () => validHour() && validMinute();
 
   const [state, setState] = createSignal<'question' | 'answer'>('question');
 
@@ -74,6 +83,8 @@ const Time: Component = () => {
               userAnswer={[userAnswer, setUserAnswer]}
               state={[state, setState]}
               currentTime={currentTime}
+              validHour={validHour}
+              validMinute={validMinute}
               className="h-full"
             />
           </div>
@@ -118,8 +129,17 @@ const RightCard: Component<{
   userAnswer: Signal<{ hour: string; minute: string }>;
   state: Signal<'question' | 'answer'>;
   currentTime: Accessor<{ hour: number; minute: number }>;
+  validHour: Accessor<boolean>;
+  validMinute: Accessor<boolean>;
   className?: string;
-}> = ({ userAnswer: [userAnswer, setUserAnswer], state: [state], currentTime, className }) => {
+}> = ({
+  userAnswer: [userAnswer, setUserAnswer],
+  state: [state],
+  currentTime,
+  validHour,
+  validMinute,
+  className,
+}) => {
   const disabled = () => state() === 'answer';
   let hourInputRef: HTMLInputElement | undefined;
 
@@ -142,7 +162,7 @@ const RightCard: Component<{
           value={userAnswer().hour}
           onInput={e => setUserAnswer({ ...userAnswer(), hour: e.currentTarget.value })}
           disabled={disabled()}
-          class={`${disabled() ? 'bg-gray-200' : ''} w-24 rounded border p-2 text-center`}
+          class={`${disabled() ? 'bg-gray-200' : ''} ${!validHour() && userAnswer().hour !== '' ? 'bg-red-200' : ''} w-24 rounded border p-2 text-center`}
           placeholder="Saat"
         />
         <span class="text-2xl">:</span>
@@ -154,7 +174,7 @@ const RightCard: Component<{
           value={userAnswer().minute}
           onInput={e => setUserAnswer({ ...userAnswer(), minute: e.currentTarget.value })}
           disabled={disabled()}
-          class={`${disabled() ? 'bg-gray-200' : ''} w-24 rounded border p-2 text-center`}
+          class={`${disabled() ? 'bg-gray-200' : ''} ${!validMinute() && userAnswer().minute !== '' ? 'bg-red-200' : ''} w-24 rounded border p-2 text-center`}
           placeholder="Dakika"
         />
       </div>
