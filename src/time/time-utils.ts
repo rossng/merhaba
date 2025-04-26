@@ -99,7 +99,7 @@ export function timeToTurkish(time: { hour: number; minute: number }): string {
   const minuteToText = numbersTurkish[60 - time.minute];
 
   if (time.minute === 0) {
-    return `${hourText} saat`;
+    return `saat ${hourText}`;
   } else if (time.minute === 15) {
     return `${accusativeHourText} çeyrek geçiyor`;
   } else if (time.minute === 30) {
