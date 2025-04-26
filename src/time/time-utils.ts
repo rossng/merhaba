@@ -1,6 +1,6 @@
 const accusativeNumbersTurkish: Record<number, string> = {
   1: 'biri',
-  2: 'ikisi',
+  2: 'ikiyi',
   3: 'üçü',
   4: 'dördü',
   5: 'beşi',
