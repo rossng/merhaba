@@ -1,10 +1,10 @@
 import { createEffect, createSignal } from 'solid-js';
 import { QACard } from '../qa/QA';
 
-export const NumericTimeInputCard: QACard<{ hour: number; minute: number }, {}> = ({
-  userAnswer: [userAnswer, setUserAnswer],
-  correctAnswer,
-}) => {
+export const NumericTimeInputCard: QACard<
+  { hour: number; minute: number },
+  { hour?: number; minute?: number }
+> = ({ userAnswer: [userAnswer, setUserAnswer], correctAnswer }) => {
   let hourInputRef: HTMLInputElement | undefined;
 
   const [userHour, setUserHour] = createSignal<string>('');
@@ -29,7 +29,7 @@ export const NumericTimeInputCard: QACard<{ hour: number; minute: number }, {}> 
     if (validHour()) {
       setUserAnswer(prev => ({ ...prev, hour: parseInt(userHour()) }));
     } else {
-      setUserAnswer(prev => ({ ...prev, hour: -1 }));
+      setUserAnswer(prev => ({ ...prev, hour: undefined }));
     }
   });
 
@@ -37,7 +37,7 @@ export const NumericTimeInputCard: QACard<{ hour: number; minute: number }, {}> 
     if (validMinute()) {
       setUserAnswer(prev => ({ ...prev, minute: parseInt(userMinute()) }));
     } else {
-      setUserAnswer(prev => ({ ...prev, minute: -1 }));
+      setUserAnswer(prev => ({ ...prev, minute: undefined }));
     }
   });
 

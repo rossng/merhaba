@@ -1,59 +1,59 @@
 import { dequal } from 'dequal';
-import { Accessor, Component, createSignal, JSX, Signal } from 'solid-js';
+import { Accessor, Component, createEffect, createSignal, JSX, Signal } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { Results } from '../Results';
 
-export type QACard<TAnswer, TSettings> = Component<{
+export type QACard<TAnswer, TInput> = Component<{
   correctAnswer: Accessor<TAnswer>;
-  userAnswer: Signal<TAnswer>;
-  settings: Accessor<TSettings>;
+  userAnswer: Signal<TInput>;
 }>;
 
-export type Question<TAnswer, TSettings> = {
-  questionType: string;
-  questionCard: QACard<TAnswer, TSettings>;
-  answerCard: QACard<TAnswer, TSettings>;
-  correctionCard: QACard<TAnswer, TSettings>;
-  validateUserAnswer: (userAnswer: TAnswer) => boolean;
+export type QuestionType<TAnswer, TInput> = {
+  name: string;
+  questionCard: QACard<TAnswer, TInput>;
+  answerCard: QACard<TAnswer, TInput>;
+  correctionCard: QACard<TAnswer, TInput>;
+  initialUserAnswer: TInput;
+  validateUserAnswer: (userAnswer: TInput) => boolean;
+  generateQuestion: () => TAnswer;
 };
 
-export const QA = <TAnswer, TSettings>({
-  questions,
-  settings,
-  onNewQuestion,
-  correctAnswer,
-  initialUserAnswer,
-  header,
+export const Question = <TAnswer, TInput>({
+  questionType,
+  onQuestionCompleted,
+  onQuestionAnswered,
+  question,
 }: {
-  questions: Question<TAnswer, TSettings>[];
-  settings: Accessor<TSettings>;
-  onNewQuestion: () => void;
-  correctAnswer: Accessor<TAnswer>;
-  initialUserAnswer: TAnswer;
-  header: JSX.Element;
+  questionType: Accessor<QuestionType<TAnswer, TInput>>;
+  question: Accessor<TAnswer>;
+  onQuestionCompleted: () => void;
+  onQuestionAnswered: (isCorrect: boolean) => void;
 }) => {
-  const { questionCard, answerCard, correctionCard, validateUserAnswer } = questions[0];
-  const [userAnswer, setUserAnswer] = createSignal<TAnswer>(initialUserAnswer);
-  const [results, setResults] = createSignal<boolean[]>([]);
+  const [userAnswer, setUserAnswer] = createSignal<TInput>(questionType().initialUserAnswer);
   const [state, setState] = createSignal<'question' | 'answer'>('question');
-  const validUserAnswer = () => validateUserAnswer(userAnswer());
+  const validUserAnswer = () => questionType().validateUserAnswer(userAnswer());
+
+  createEffect(() => {
+    questionType();
+    question();
+    setUserAnswer(() => questionType().initialUserAnswer);
+    setState('question');
+  });
 
   function handleNext() {
-    setUserAnswer(() => initialUserAnswer);
-    setState('question');
-    onNewQuestion();
+    onQuestionCompleted();
   }
 
   const [nextButtonRef, setNextButtonRef] = createSignal<HTMLButtonElement>();
 
   function handleSubmit() {
-    const isCorrect = dequal(userAnswer(), correctAnswer());
+    const isCorrect = dequal(userAnswer(), question());
 
     if (isCorrect) {
-      setResults([...results(), true]);
+      onQuestionAnswered(true);
       handleNext();
     } else {
-      setResults([...results(), false]);
+      onQuestionAnswered(false);
       setState('answer');
       nextButtonRef()?.focus();
     }
@@ -70,36 +70,33 @@ export const QA = <TAnswer, TSettings>({
   };
 
   return (
-    <div class="flex w-full max-w-6xl flex-1 flex-col items-center gap-8 p-8 md:justify-center">
-      {header}
+    <>
       <div class="flex w-full flex-col items-center justify-between gap-8 md:h-10 md:flex-grow md:flex-row md:items-stretch">
         <div class="w-1/2 flex-1 text-2xl font-bold">
           <Dynamic
-            component={questionCard}
-            correctAnswer={correctAnswer}
+            component={questionType().questionCard}
+            correctAnswer={question}
             userAnswer={[userAnswer, setUserAnswer]}
-            settings={settings}
           />
         </div>
         <div class="w-1/2 flex-1" onKeyPress={handleKeyPress}>
           {state() === 'question' && (
             <Dynamic
-              component={answerCard}
-              correctAnswer={correctAnswer}
+              component={questionType().answerCard}
+              correctAnswer={question}
               userAnswer={[userAnswer, setUserAnswer]}
-              settings={settings}
             />
           )}
           {state() === 'answer' && (
             <Dynamic
-              component={correctionCard}
-              correctAnswer={correctAnswer}
+              component={questionType().correctionCard}
+              correctAnswer={question}
               userAnswer={[userAnswer, setUserAnswer]}
-              settings={settings}
             />
           )}
         </div>
       </div>
+
       {state() === 'question' && (
         <button
           onClick={handleSubmit}
@@ -118,6 +115,36 @@ export const QA = <TAnswer, TSettings>({
           <span>Next</span> <span class="text-sm opacity-50">⏎</span>
         </button>
       )}
+    </>
+  );
+};
+
+export const QA = ({
+  questions,
+  header,
+}: {
+  questions: QuestionType<any, any>[];
+  header: JSX.Element;
+}) => {
+  const [results, setResults] = createSignal<boolean[]>([]);
+
+  const [questionType, setQuestionType] = createSignal<QuestionType<unknown, unknown>>(
+    questions[0]
+  );
+  const [question, setQuestion] = createSignal<unknown>(questions[0].generateQuestion());
+
+  return (
+    <div class="flex w-full max-w-6xl flex-1 flex-col items-center gap-8 p-8 md:justify-center">
+      {header}
+      <Question
+        questionType={questionType}
+        question={question}
+        onQuestionAnswered={isCorrect => setResults([...results(), isCorrect])}
+        onQuestionCompleted={() => {
+          setQuestionType(questions[0]);
+          setQuestion(questions[0].generateQuestion());
+        }}
+      />
       <Results results={results} />
     </div>
   );

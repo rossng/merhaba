@@ -1,6 +1,6 @@
-import { createSignal, type Component } from 'solid-js';
+import { type Component } from 'solid-js';
 import Header from '../components/Header';
-import { QA, Question } from '../components/qa/QA';
+import { QA, QuestionType } from '../components/qa/QA';
 import { NumericTimeCorrectionCard } from '../components/time/NumericTimeCorrectionCard';
 import { NumericTimeInputCard } from '../components/time/NumericTimeInputCard';
 import TextTimeCard from '../components/time/TextTimeCard';
@@ -13,19 +13,23 @@ import { generateRandomTime } from '../time/time-utils';
 */
 
 const Time: Component = () => {
-  const [settings] = createSignal({});
-  const [correctAnswer, setCorrectAnswer] = createSignal(generateRandomTime());
-
-  const question: Question<{ hour: number; minute: number }, {}> = {
-    questionType: 'time',
+  const question: QuestionType<
+    { hour: number; minute: number },
+    { hour?: number; minute?: number }
+  > = {
+    name: 'text-to-time',
     questionCard: TextTimeCard,
     answerCard: NumericTimeInputCard,
     correctionCard: NumericTimeCorrectionCard,
+    initialUserAnswer: { hour: undefined, minute: undefined },
     validateUserAnswer: userAnswer =>
+      userAnswer.hour !== undefined &&
       userAnswer.hour >= 1 &&
       userAnswer.hour <= 12 &&
+      userAnswer.minute !== undefined &&
       userAnswer.minute >= 0 &&
       userAnswer.minute <= 59,
+    generateQuestion: () => generateRandomTime(),
   };
 
   return (
@@ -33,12 +37,6 @@ const Time: Component = () => {
       <Header />
       <QA
         questions={[question]}
-        settings={settings}
-        correctAnswer={correctAnswer}
-        onNewQuestion={() => {
-          setCorrectAnswer(generateRandomTime());
-        }}
-        initialUserAnswer={{ hour: -1, minute: -1 }}
         header={
           <div class="flex flex-col items-center gap-0">
             <h2 class="text-2xl font-bold">Saat kaç?</h2>

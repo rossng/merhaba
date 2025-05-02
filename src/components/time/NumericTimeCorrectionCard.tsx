@@ -1,9 +1,9 @@
 import { QACard } from '../qa/QA';
 
-export const NumericTimeCorrectionCard: QACard<{ hour: number; minute: number }, {}> = ({
-  userAnswer: [userAnswer],
-  correctAnswer,
-}) => {
+export const NumericTimeCorrectionCard: QACard<
+  { hour: number; minute: number },
+  { hour?: number; minute?: number }
+> = ({ userAnswer: [userAnswer], correctAnswer }) => {
   return (
     <div class={`flex h-full flex-col items-center justify-center gap-4`}>
       <div class={`flex items-center justify-center gap-4`}>
