@@ -1,21 +1,30 @@
-import { dequal } from 'dequal';
-import { Accessor, Component, createEffect, createSignal, JSX, Signal } from 'solid-js';
+import { Accessor, batch, Component, createEffect, createSignal, JSX, Signal } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { Results } from '../Results';
 
-export type QACard<TAnswer, TInput> = Component<{
+export type QuestionCard<TAnswer> = Component<{
+  correctAnswer: Accessor<TAnswer>;
+}>;
+
+export type AnswerCard<TAnswer, TInput> = Component<{
   correctAnswer: Accessor<TAnswer>;
   userAnswer: Signal<TInput>;
 }>;
 
+export type CorrectionCard<TAnswer, TInput> = Component<{
+  correctAnswer: Accessor<TAnswer>;
+  userAnswer: Accessor<TInput>;
+}>;
+
 export type QuestionType<TAnswer, TInput> = {
   name: string;
-  questionCard: QACard<TAnswer, TInput>;
-  answerCard: QACard<TAnswer, TInput>;
-  correctionCard: QACard<TAnswer, TInput>;
+  questionCard: QuestionCard<TAnswer>;
+  answerCard: AnswerCard<TAnswer, TInput>;
+  correctionCard: CorrectionCard<TAnswer, TInput>;
   initialUserAnswer: TInput;
   validateUserAnswer: (userAnswer: TInput) => boolean;
   generateQuestion: () => TAnswer;
+  checkAnswer: (userAnswer: TInput, correctAnswer: TAnswer) => boolean;
 };
 
 export const Question = <TAnswer, TInput>({
@@ -47,7 +56,7 @@ export const Question = <TAnswer, TInput>({
   const [nextButtonRef, setNextButtonRef] = createSignal<HTMLButtonElement>();
 
   function handleSubmit() {
-    const isCorrect = dequal(userAnswer(), question());
+    const isCorrect = questionType().checkAnswer(userAnswer(), question());
 
     if (isCorrect) {
       onQuestionAnswered(true);
@@ -73,11 +82,7 @@ export const Question = <TAnswer, TInput>({
     <>
       <div class="flex w-full flex-col items-center justify-between gap-8 md:h-10 md:flex-grow md:flex-row md:items-stretch">
         <div class="w-1/2 flex-1 text-2xl font-bold">
-          <Dynamic
-            component={questionType().questionCard}
-            correctAnswer={question}
-            userAnswer={[userAnswer, setUserAnswer]}
-          />
+          <Dynamic component={questionType().questionCard} correctAnswer={question} />
         </div>
         <div class="w-1/2 flex-1" onKeyPress={handleKeyPress}>
           {state() === 'question' && (
@@ -91,7 +96,7 @@ export const Question = <TAnswer, TInput>({
             <Dynamic
               component={questionType().correctionCard}
               correctAnswer={question}
-              userAnswer={[userAnswer, setUserAnswer]}
+              userAnswer={userAnswer}
             />
           )}
         </div>
@@ -129,9 +134,9 @@ export const QA = ({
   const [results, setResults] = createSignal<boolean[]>([]);
 
   const [questionType, setQuestionType] = createSignal<QuestionType<unknown, unknown>>(
-    questions[0]
+    questions[Math.floor(Math.random() * questions.length)]
   );
-  const [question, setQuestion] = createSignal<unknown>(questions[0].generateQuestion());
+  const [question, setQuestion] = createSignal<unknown>(questionType().generateQuestion());
 
   return (
     <div class="flex w-full max-w-6xl flex-1 flex-col items-center gap-8 p-8 md:justify-center">
@@ -141,8 +146,11 @@ export const QA = ({
         question={question}
         onQuestionAnswered={isCorrect => setResults([...results(), isCorrect])}
         onQuestionCompleted={() => {
-          setQuestionType(questions[0]);
-          setQuestion(questions[0].generateQuestion());
+          const newType = Math.floor(Math.random() * questions.length);
+          batch(() => {
+            setQuestionType(questions[newType]);
+            setQuestion(questions[newType].generateQuestion());
+          });
         }}
       />
       <Results results={results} />

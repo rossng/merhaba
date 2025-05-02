@@ -1,10 +1,10 @@
 import { createEffect, createSignal } from 'solid-js';
-import { QACard } from '../qa/QA';
+import { AnswerCard } from '../qa/QA';
 
-export const NumericTimeInputCard: QACard<
+export const NumericTimeInputCard: AnswerCard<
   { hour: number; minute: number },
   { hour?: number; minute?: number }
-> = ({ userAnswer: [userAnswer, setUserAnswer], correctAnswer }) => {
+> = ({ userAnswer: [, setUserAnswer], correctAnswer }) => {
   let hourInputRef: HTMLInputElement | undefined;
 
   const [userHour, setUserHour] = createSignal<string>('');
