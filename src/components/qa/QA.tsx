@@ -9,27 +9,30 @@ export type QACard<TAnswer, TSettings> = Component<{
   settings: Accessor<TSettings>;
 }>;
 
+export type Question<TAnswer, TSettings> = {
+  questionType: string;
+  questionCard: QACard<TAnswer, TSettings>;
+  answerCard: QACard<TAnswer, TSettings>;
+  correctionCard: QACard<TAnswer, TSettings>;
+  validateUserAnswer: (userAnswer: TAnswer) => boolean;
+};
+
 export const QA = <TAnswer, TSettings>({
-  questionCard,
-  answerCard,
-  correctionCard,
+  questions,
   settings,
   onNewQuestion,
   correctAnswer,
   initialUserAnswer,
-  validateUserAnswer,
   header,
 }: {
-  questionCard: QACard<TAnswer, TSettings>;
-  answerCard: QACard<TAnswer, TSettings>;
-  correctionCard: QACard<TAnswer, TSettings>;
+  questions: Question<TAnswer, TSettings>[];
   settings: Accessor<TSettings>;
   onNewQuestion: () => void;
   correctAnswer: Accessor<TAnswer>;
   initialUserAnswer: TAnswer;
-  validateUserAnswer: (userAnswer: TAnswer) => boolean;
   header: JSX.Element;
 }) => {
+  const { questionCard, answerCard, correctionCard, validateUserAnswer } = questions[0];
   const [userAnswer, setUserAnswer] = createSignal<TAnswer>(initialUserAnswer);
   const [results, setResults] = createSignal<boolean[]>([]);
   const [state, setState] = createSignal<'question' | 'answer'>('question');

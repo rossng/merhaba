@@ -1,6 +1,6 @@
 import { createSignal, type Component } from 'solid-js';
 import Header from '../components/Header';
-import { QA } from '../components/qa/QA';
+import { QA, Question } from '../components/qa/QA';
 import { NumericTimeCorrectionCard } from '../components/time/NumericTimeCorrectionCard';
 import { NumericTimeInputCard } from '../components/time/NumericTimeInputCard';
 import TextTimeCard from '../components/time/TextTimeCard';
@@ -16,25 +16,29 @@ const Time: Component = () => {
   const [settings] = createSignal({});
   const [correctAnswer, setCorrectAnswer] = createSignal(generateRandomTime());
 
+  const question: Question<{ hour: number; minute: number }, {}> = {
+    questionType: 'time',
+    questionCard: TextTimeCard,
+    answerCard: NumericTimeInputCard,
+    correctionCard: NumericTimeCorrectionCard,
+    validateUserAnswer: userAnswer =>
+      userAnswer.hour >= 1 &&
+      userAnswer.hour <= 12 &&
+      userAnswer.minute >= 0 &&
+      userAnswer.minute <= 59,
+  };
+
   return (
     <div class="flex h-screen flex-col items-center">
       <Header />
       <QA
-        questionCard={TextTimeCard}
-        answerCard={NumericTimeInputCard}
-        correctionCard={NumericTimeCorrectionCard}
+        questions={[question]}
         settings={settings}
         correctAnswer={correctAnswer}
-        initialUserAnswer={{ hour: -1, minute: -1 }}
         onNewQuestion={() => {
           setCorrectAnswer(generateRandomTime());
         }}
-        validateUserAnswer={userAnswer =>
-          userAnswer.hour >= 1 &&
-          userAnswer.hour <= 12 &&
-          userAnswer.minute >= 0 &&
-          userAnswer.minute <= 59
-        }
+        initialUserAnswer={{ hour: -1, minute: -1 }}
         header={
           <div class="flex flex-col items-center gap-0">
             <h2 class="text-2xl font-bold">Saat kaç?</h2>
