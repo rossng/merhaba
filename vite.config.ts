@@ -10,4 +10,12 @@ export default defineConfig({
     target: 'esnext',
   },
   base: '/merhaba/',
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    testTransformMode: {
+      web: ['\\.[jt]sx?$'],
+    },
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+  },
 });
