@@ -1,10 +1,10 @@
-import { timeToTurkish } from '../../time/time-utils';
+import { clockTimeToTurkish } from '../../time/time-utils';
 import { QuestionCard } from '../qa/QA';
 
 const TextTimeCard: QuestionCard<{ hour: number; minute: number }> = ({ correctAnswer }) => {
   return (
     <div class={`flex h-full flex-col justify-center`}>
-      <p class="text-center">{timeToTurkish(correctAnswer())}</p>
+      <p class="text-center">{clockTimeToTurkish(correctAnswer())}</p>
     </div>
   );
 };

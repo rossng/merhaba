@@ -1,4 +1,4 @@
-import { Accessor, batch, Component, createEffect, createSignal, JSX, Signal } from 'solid-js';
+import { Accessor, batch, Component, createEffect, createSignal, Signal } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { Results } from '../Results';
 
@@ -124,13 +124,7 @@ export const Question = <TAnswer, TInput>({
   );
 };
 
-export const QA = ({
-  questions,
-  header,
-}: {
-  questions: QuestionType<any, any>[];
-  header: JSX.Element;
-}) => {
+export const QA = ({ questions }: { questions: QuestionType<any, any>[] }) => {
   const [results, setResults] = createSignal<boolean[]>([]);
 
   const [questionType, setQuestionType] = createSignal<QuestionType<unknown, unknown>>(
@@ -140,7 +134,6 @@ export const QA = ({
 
   return (
     <div class="flex w-full max-w-6xl flex-1 flex-col items-center gap-8 p-8 md:justify-center">
-      {header}
       <Question
         questionType={questionType}
         question={question}
