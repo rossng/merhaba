@@ -28,6 +28,21 @@ const dativeNumbersTurkish: Record<number, string> = {
   12: 'on ikiye',
 };
 
+const locativeNumbersTurkish: Record<number, string> = {
+  1: 'birde',
+  2: 'ikide',
+  3: 'üçte',
+  4: 'dörtte',
+  5: 'beşte',
+  6: 'altıda',
+  7: 'yedide',
+  8: 'sekizde',
+  9: 'dokuzda',
+  10: 'onda',
+  11: 'on birde',
+  12: 'on ikide',
+};
+
 const numbersTurkish: Record<number, string> = {
   1: 'bir',
   2: 'iki',
@@ -91,7 +106,8 @@ const numbersTurkish: Record<number, string> = {
   60: 'altmış',
 };
 
-export function timeToTurkish(time: { hour: number; minute: number }): string {
+// English equivalent: 4:30 -> half past four
+export function clockTimeToTurkish(time: { hour: number; minute: number }): string {
   const hourText = numbersTurkish[time.hour];
   const accusativeHourText = accusativeNumbersTurkish[time.hour];
   const dativeHourText = dativeNumbersTurkish[(time.hour % 12) + 1];
@@ -110,6 +126,30 @@ export function timeToTurkish(time: { hour: number; minute: number }): string {
     return `${accusativeHourText} ${minuteText} geçiyor`;
   } else {
     return `${dativeHourText} ${minuteToText} var`;
+  }
+}
+
+// English equivalent: 4:30 -> _at_ half past four
+export function eventTimeToTurkish(time: { hour: number; minute: number }): string {
+  const hourText = numbersTurkish[time.hour];
+  const accusativeHourText = accusativeNumbersTurkish[time.hour];
+  const dativeHourText = dativeNumbersTurkish[(time.hour % 12) + 1];
+  const locativeHourText = locativeNumbersTurkish[time.hour];
+  const minuteText = numbersTurkish[time.minute];
+  const minuteToText = numbersTurkish[60 - time.minute];
+
+  if (time.minute === 0) {
+    return `saat ${locativeHourText}`;
+  } else if (time.minute === 15) {
+    return `${accusativeHourText} çeyrek geçe`;
+  } else if (time.minute === 30) {
+    return `${hourText} buçukta`;
+  } else if (time.minute === 45) {
+    return `${dativeHourText} çeyrek kala`;
+  } else if (time.minute < 30) {
+    return `${accusativeHourText} ${minuteText} geçe`;
+  } else {
+    return `${dativeHourText} ${minuteToText} kala`;
   }
 }
 
