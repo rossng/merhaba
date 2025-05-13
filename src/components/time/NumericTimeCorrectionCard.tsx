@@ -1,6 +1,6 @@
 import { CorrectionCard } from '../qa/QA';
 
-export const NumericTimeCorrectionCard: CorrectionCard<
+const NumericTimeCorrectionCard: CorrectionCard<
   { hour: number; minute: number },
   { hour?: number; minute?: number }
 > = ({ userAnswer, correctAnswer }) => {
@@ -38,3 +38,5 @@ export const NumericTimeCorrectionCard: CorrectionCard<
     </div>
   );
 };
+
+export default NumericTimeCorrectionCard;

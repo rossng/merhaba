@@ -1,4 +1,4 @@
-import { clockTimeToTurkish } from '../../time/time-utils';
+import { clockTimeToTurkish } from '../../questions/time-utils';
 import { QuestionCard } from '../qa/QA';
 
 const TextTimeCard: QuestionCard<{ hour: number; minute: number }> = ({ correctAnswer }) => {

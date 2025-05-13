@@ -1,6 +1,7 @@
 import { A } from '@solidjs/router';
 import type { Component } from 'solid-js';
 import cardsImage from '../assets/cards.png';
+import caseImage from '../assets/case.png';
 import watchImage from '../assets/watch.png';
 import Header from '../components/Header';
 
@@ -11,7 +12,8 @@ const Home: Component = () => {
       <div class="h-2 flex-1 p-4">
         <div class="grid h-full w-full grid-cols-2 gap-4 md:grid-cols-4">
           <Card image={watchImage} title="Zaman" subheading="Time" link="/zaman" />
-          {Array(7)
+          <Card image={caseImage} title="İsim hâli" subheading="Noun Case" link="/case" />
+          {Array(6)
             .fill(0)
             .map(() => (
               <Card image={cardsImage} title="Coming soon" />

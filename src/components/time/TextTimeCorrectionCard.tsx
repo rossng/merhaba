@@ -1,7 +1,7 @@
-import { clockTimeToTurkish } from '../../time/time-utils';
+import { clockTimeToTurkish } from '../../questions/time-utils';
 import { CorrectionCard } from '../qa/QA';
 
-export const TextTimeCorrectionCard: CorrectionCard<{ hour: number; minute: number }, string> = ({
+const TextTimeCorrectionCard: CorrectionCard<{ hour: number; minute: number }, string> = ({
   userAnswer,
   correctAnswer,
 }) => {
@@ -27,3 +27,5 @@ export const TextTimeCorrectionCard: CorrectionCard<{ hour: number; minute: numb
     </div>
   );
 };
+
+export default TextTimeCorrectionCard;

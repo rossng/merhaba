@@ -1,19 +1,22 @@
 import { type Component, createSignal } from 'solid-js';
 import Header from '../components/Header';
 import { QA, QuestionType } from '../components/qa/QA';
+import TextInputCard from '../components/qa/TextInputCard';
 import NumericTimeCard from '../components/time/NumericTimeCard';
-import { NumericTimeCorrectionCard } from '../components/time/NumericTimeCorrectionCard';
-import { NumericTimeInputCard } from '../components/time/NumericTimeInputCard';
+import NumericTimeCorrectionCard from '../components/time/NumericTimeCorrectionCard';
+import NumericTimeInputCard from '../components/time/NumericTimeInputCard';
 import TextEventTimeCard from '../components/time/TextEventTimeCard';
 import TextTimeCard from '../components/time/TextTimeCard';
-import { TextTimeCorrectionCard } from '../components/time/TextTimeCorrectionCard';
-import { TextTimeInputCard } from '../components/time/TextTimeInputCard';
+import TextTimeCorrectionCard from '../components/time/TextTimeCorrectionCard';
 import { TimeTypePicker } from '../components/time/TimeTypePicker';
-import { clockTimeToTurkish, eventTimeToTurkish, generateRandomTime } from '../time/time-utils';
+import {
+  clockTimeToTurkish,
+  eventTimeToTurkish,
+  generateRandomTime,
+} from '../questions/time-utils';
 
 /*
   TODO:
-  - Inverse mode: get a numeric time, type the words
   - Enable/disable different time types (e.g. half past, to/past, morning/evening)
 */
 
@@ -48,7 +51,7 @@ const Time: Component = () => {
   const question2: QuestionType<{ hour: number; minute: number }, string> = {
     name: 'time-to-text',
     questionCard: NumericTimeCard,
-    answerCard: TextTimeInputCard,
+    answerCard: TextInputCard('Saat'),
     correctionCard: TextTimeCorrectionCard,
     initialUserAnswer: '',
     validateUserAnswer: userAnswer => userAnswer.length > 0,
@@ -81,7 +84,7 @@ const Time: Component = () => {
   const question4: QuestionType<{ hour: number; minute: number }, string> = {
     name: 'time-to-text',
     questionCard: NumericTimeCard,
-    answerCard: TextTimeInputCard,
+    answerCard: TextInputCard('Saat'),
     correctionCard: TextTimeCorrectionCard,
     initialUserAnswer: '',
     validateUserAnswer: userAnswer => userAnswer.length > 0,

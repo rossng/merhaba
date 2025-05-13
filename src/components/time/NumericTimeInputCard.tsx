@@ -1,7 +1,7 @@
 import { createEffect, createSignal } from 'solid-js';
 import { AnswerCard } from '../qa/QA';
 
-export const NumericTimeInputCard: AnswerCard<
+const NumericTimeInputCard: AnswerCard<
   { hour: number; minute: number },
   { hour?: number; minute?: number }
 > = ({ userAnswer: [, setUserAnswer], correctAnswer }) => {
@@ -69,3 +69,5 @@ export const NumericTimeInputCard: AnswerCard<
     </div>
   );
 };
+
+export default NumericTimeInputCard;

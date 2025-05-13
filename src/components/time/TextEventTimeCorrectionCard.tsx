@@ -1,4 +1,4 @@
-import { eventTimeToTurkish } from '../../time/time-utils';
+import { eventTimeToTurkish } from '../../questions/time-utils';
 import { CorrectionCard } from '../qa/QA';
 
 export const TextTimeCorrectionCard: CorrectionCard<{ hour: number; minute: number }, string> = ({

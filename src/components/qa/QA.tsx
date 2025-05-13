@@ -1,3 +1,4 @@
+import { dequal } from 'dequal';
 import { Accessor, batch, Component, createEffect, createSignal, Signal } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { Results } from '../Results';
@@ -6,8 +7,7 @@ export type QuestionCard<TAnswer> = Component<{
   correctAnswer: Accessor<TAnswer>;
 }>;
 
-export type AnswerCard<TAnswer, TInput> = Component<{
-  correctAnswer: Accessor<TAnswer>;
+export type AnswerCard<TInput> = Component<{
   userAnswer: Signal<TInput>;
 }>;
 
@@ -19,7 +19,7 @@ export type CorrectionCard<TAnswer, TInput> = Component<{
 export type QuestionType<TAnswer, TInput> = {
   name: string;
   questionCard: QuestionCard<TAnswer>;
-  answerCard: AnswerCard<TAnswer, TInput>;
+  answerCard: AnswerCard<TInput>;
   correctionCard: CorrectionCard<TAnswer, TInput>;
   initialUserAnswer: TInput;
   validateUserAnswer: (userAnswer: TInput) => boolean;
@@ -142,7 +142,11 @@ export const QA = ({ questions }: { questions: QuestionType<any, any>[] }) => {
           const newType = Math.floor(Math.random() * questions.length);
           batch(() => {
             setQuestionType(questions[newType]);
-            setQuestion(questions[newType].generateQuestion());
+            let newQuestion = question();
+            while (dequal(newQuestion, question())) {
+              newQuestion = questions[newType].generateQuestion();
+            }
+            setQuestion(newQuestion);
           });
         }}
       />
