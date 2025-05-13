@@ -9,6 +9,7 @@ export type QuestionCard<TAnswer> = Component<{
 
 export type AnswerCard<TInput> = Component<{
   userAnswer: Signal<TInput>;
+  correctAnswer: Accessor<unknown>;
 }>;
 
 export type CorrectionCard<TAnswer, TInput> = Component<{
