@@ -24,6 +24,9 @@ const Case: Component = () => {
       <div class="flex flex-col items-center gap-0">
         <h2 class="text-2xl font-bold">İsim hâli</h2>
         <p class="text-sm text-gray-500">Noun case</p>
+        <span class="mt-2 rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">
+          Preview
+        </span>
       </div>
       <QA questions={[question1]} />
     </div>
